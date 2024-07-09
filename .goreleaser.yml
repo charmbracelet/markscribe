@@ -1,12 +1,14 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema-pro.json
+version: 2
+
 includes:
   - from_url:
-      url: charmbracelet/meta/main/goreleaser-full.yaml
+      url: charmbracelet/meta/main/goreleaser.yaml
 
 variables:
   binary_name: markscribe
   description: "Your personal markdown scribe with template-engine and Git(Hub) & RSS powers"
   github_url: "https://github.com/charmbracelet/markscribe"
-  maintainer: "Ayman Bagabas <ayman@charm.sh>"
-  brew_commit_author_name: "Ayman Bagabas"
-  brew_commit_author_email: "ayman@charm.sh"
-# yaml-language-server: $schema=https://goreleaser.com/static/schema-pro.json
+  maintainer: "Christian Muehlhaeuser <muesli@charm.sh>"
+  brew_commit_author_name: "Christian Muehlhaeuser"
+  brew_commit_author_email: "muesli@charm.sh"
