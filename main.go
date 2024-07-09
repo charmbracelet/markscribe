@@ -49,6 +49,7 @@ func main() {
 	funcMap["gists"] = gists
 	funcMap["sponsors"] = sponsors
 	funcMap["repo"] = repo
+	funcMap["repoRecentReleases"] = repoRecentReleases
 	/* RSS */
 	funcMap["rss"] = rssFeed
 	/* GoodReads */

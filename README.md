@@ -134,6 +134,21 @@ Last Release: {{humanize .LastRelease.PublishedAt}}
 {{end}}
 ```
 
+### Recent releases to a given repository
+
+```
+{{range recentRepoReleases "charmbracelet" "markscribe" 10}}
+Name: {{.Name}}
+Git Tag: {{.TagName}}
+URL: {{.URL}}
+Published: {{humanize .PublishedAt}}
+CreatedAt: {{humanize .CreatedAt}}
+IsPreRelease: {{.IsPreRelease}}
+IsDraft: {{.IsDraft}}
+IsLatest: {{.IsLatest}}
+{{end}}
+```
+
 This function requires GitHub authentication with the following API scopes:
 `repo:status`, `public_repo`, `read:user`.
 
