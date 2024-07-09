@@ -1,5 +1,6 @@
 run:
   tests: false
+  timeout: 5m
 
 issues:
   include:
@@ -22,7 +23,9 @@ linters:
     - godox
     - gomoddirectives
     - goprintffuncname
+    # - lll
     - misspell
+    - mnd
     - nakedret
     - nestif
     - noctx
