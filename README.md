@@ -246,7 +246,7 @@ here: https://golang.org/pkg/text/template/
 
 ## Template Helpers
 
-markscribe comes with a [sprout](https://docs.atom.codes/sprout) and a few more template helpers:
+markscribe comes with [sprout](https://docs.atom.codes/sprout) and a few more template helpers:
 
 To format timestamps, call `humanize`:
 
