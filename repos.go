@@ -71,7 +71,11 @@ var recentReleasesQuery struct {
 
 var repoQuery struct {
 	Repository struct {
-		Description   githubv4.String
+		Description githubv4.String
+		Owner       struct {
+			Login githubv4.String
+		}
+		Name          githubv4.String
 		NameWithOwner githubv4.String
 		IsPrivate     githubv4.Boolean
 		URL           githubv4.String
@@ -283,12 +287,14 @@ func repo(owner, name string) Repo {
 	}
 	repo := repoQuery.Repository
 	return Repo{
-		Name:        string(repo.NameWithOwner),
-		URL:         string(repo.URL),
-		Description: string(repo.Description),
-		Stargazers:  int(repo.Stargazers.TotalCount),
-		IsPrivate:   bool(repo.IsPrivate),
-		LastRelease: releaseFromQL(repo.Releases),
+		Owner:         string(repo.Owner.Login),
+		Name:          string(repo.Name),
+		NameWithOwner: string(repo.NameWithOwner),
+		URL:           string(repo.URL),
+		Description:   string(repo.Description),
+		Stargazers:    int(repo.Stargazers.TotalCount),
+		IsPrivate:     bool(repo.IsPrivate),
+		LastRelease:   releaseFromQL(repo.Releases),
 	}
 }
 
