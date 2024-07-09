@@ -1,4 +1,4 @@
-module github.com/muesli/markscribe
+module github.com/charmbracelet/markscribe
 
 go 1.21
 
