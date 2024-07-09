@@ -1,78 +1,14 @@
-# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
-
+# yaml-language-server: $schema=https://goreleaser.com/static/schema-pro.json
 version: 2
-env:
-  - GO111MODULE=on
-before:
-  hooks:
-    - go mod tidy
-builds:
-  - binary: markscribe
-    flags:
-      - -trimpath
-    ldflags: -s -w -X main.Version={{ .Version }} -X main.CommitSHA={{ .Commit }}
-    goos:
-      - linux
-      - freebsd
-      - openbsd
-      - darwin
-      - windows
-    goarch:
-      - amd64
-      - arm64
-      - "386"
-      - arm
-    goarm:
-      - "6"
-      - "7"
 
-archives:
-  - format_overrides:
-      - goos: windows
-        format: zip
-    name_template: >-
-      {{ .ProjectName }}_
-      {{- .Version }}_
-      {{- title .Os }}_
-      {{- if eq .Arch "amd64" }}x86_64
-      {{- else if eq .Arch "386" }}i386
-      {{- else }}{{ .Arch }}{{ end }}
-      {{- with .Arm}}v{{ . }}{{ end }}
+includes:
+  - from_url:
+      url: charmbracelet/meta/main/goreleaser.yaml
 
-nfpms:
-  - builds:
-      - markscribe
-    vendor: muesli
-    homepage: "https://fribbledom.com/"
-    maintainer: "Christian Muehlhaeuser <muesli@gmail.com>"
-    description: "Your personal markdown scribe with template-engine and Git(Hub) & RSS powers"
-    license: MIT
-    formats:
-      - deb
-      - rpm
-    bindir: /usr/bin
-
-brews:
-  - repository:
-      owner: muesli
-      name: homebrew-tap
-    commit_author:
-      name: "Christian Muehlhaeuser"
-      email: "muesli@gmail.com"
-    homepage: "https://fribbledom.com/"
-    description: "Your personal markdown scribe with template-engine and Git(Hub) & RSS powers"
-    # skip_upload: true
-
-signs:
-  - artifacts: checksum
-
-checksum:
-  name_template: "checksums.txt"
-snapshot:
-  name_template: "{{ .Tag }}-next"
-changelog:
-  sort: asc
-  filters:
-    exclude:
-      - "^docs:"
-      - "^test:"
+variables:
+  binary_name: markscribe
+  description: "Your personal markdown scribe with template-engine and Git(Hub) & RSS powers"
+  github_url: "https://github.com/charmbracelet/markscribe"
+  maintainer: "Christian Muehlhaeuser <muesli@charm.sh>"
+  brew_commit_author_name: "Christian Muehlhaeuser"
+  brew_commit_author_email: "muesli@charm.sh"
