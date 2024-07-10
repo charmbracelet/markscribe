@@ -72,43 +72,34 @@ var recentReleasesQuery struct {
 /*
 Order by stars
 {
-  user(login: "bashbunni") {
+  organization(login: "charmbracelet") {
     login
-    organization(login: "charmbracelet") {
-      login
-      repositories(
-        first: 10
-        privacy: PUBLIC
-        orderBy: {field: STARGAZERS, direction: DESC}
-      ) {
-        totalCount
-        edges {
-          node {
-            id
-            nameWithOwner
-          }
+    repositories(
+      first: 3
+      privacy: PUBLIC
+      orderBy: {field: STARGAZERS, direction: DESC}
+    ) {
+      totalCount
+      edges {
+        cursor
+        node {
+          nameWithOwner
         }
       }
     }
   }
-}
-*/
+}*/
 
-// TODO do we want cursors or not?
 var popularReposOrgQuery struct {
-	User struct {
+	Organization struct {
 		Login        githubv4.String
-		Organization struct {
-			Login        githubv4.String
-			Repositories struct {
-				TotalCount githubv4.Int
-				Edges      []struct {
-					Cursor githubv4.String
-					Node   qlRepository
-				}
-			} `graphql:"repositories(first: $count, privacy: PUBLIC, orderBy: {field: STARGAZERS, direction: DESC})"`
-		} `graphql:"organization(login: $orgname)"`
-	} `graphql:"user(login: $username)"`
+		Repositories struct {
+			TotalCount githubv4.Int
+			Edges      []struct {
+				Node qlRepository
+			}
+		} `graphql:"repositories(first: $count, privacy: PUBLIC, orderBy: {field: STARGAZERS, direction: DESC})"`
+	} `graphql:"organization(login: $orgname)"`
 }
 
 func popularRepos(count int, orgname string) []Repo {
@@ -116,25 +107,24 @@ func popularRepos(count int, orgname string) []Repo {
 
 	var repos []Repo
 	variables := map[string]interface{}{
-		"username": githubv4.String(username),
-		"orgname":  githubv4.String(orgname),
-		"count":    githubv4.Int(count + 1), // +1 in case we encounter the meta-repo itself
+		"orgname": githubv4.String(orgname),
+		"count":   githubv4.Int(count + 1), // +1 in case we encounter the meta-repo itself
 	}
 	err := gitHubClient.Query(context.Background(), &popularReposOrgQuery, variables)
 	if err != nil {
 		panic(err)
 	}
 
-	for _, v := range popularReposOrgQuery.User.Organization.Repositories.Edges {
+	for _, v := range popularReposOrgQuery.Organization.Repositories.Edges {
 		// ignore meta-repo
-		if string(v.Node.NameWithOwner) == fmt.Sprintf("%s/%s", username, username) {
+		if string(v.Node.NameWithOwner) == fmt.Sprintf("%s/%s", orgname, username) {
 			continue
 		}
-
-		repos = append(repos, repoFromQL(v.Node))
 		if len(repos) == count {
 			break
 		}
+
+		repos = append(repos, repoFromQL(v.Node))
 	}
 
 	fmt.Printf("Found %d repos!\n", len(repos))
