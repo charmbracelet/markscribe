@@ -88,7 +88,7 @@ var repoQuery struct {
 
 var repoRecentReleasesQuery struct {
 	Repository struct {
-		Releases qlRelease `graphql:"releases(first: 10, orderBy: {field: CREATED_AT, direction: DESC})"`
+		Releases qlRelease `graphql:"releases(first: $count, orderBy: {field: CREATED_AT, direction: DESC})"`
 	} `graphql:"repository(name: $name, owner: $owner)"`
 }
 
