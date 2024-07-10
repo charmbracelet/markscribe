@@ -69,6 +69,78 @@ var recentReleasesQuery struct {
 	} `graphql:"user(login:$username)"`
 }
 
+/*
+Order by stars
+{
+  user(login: "bashbunni") {
+    login
+    organization(login: "charmbracelet") {
+      login
+      repositories(
+        first: 10
+        privacy: PUBLIC
+        orderBy: {field: STARGAZERS, direction: DESC}
+      ) {
+        totalCount
+        edges {
+          node {
+            id
+            nameWithOwner
+          }
+        }
+      }
+    }
+  }
+}
+*/
+
+// TODO do we want cursors or not?
+var popularReposOrgQuery struct {
+	User struct {
+		Login        githubv4.String
+		Organization struct {
+			Login        githubv4.String
+			Repositories struct {
+				TotalCount githubv4.Int
+				Edges      []struct {
+					Cursor githubv4.String
+					Node   qlRepository
+				}
+			} `graphql:"repositories(first: $count, privacy: PUBLIC, orderBy: {field: STARGAZERS, direction: DESC})"`
+		} `graphql:"organization(login: $orgname)"`
+	} `graphql:"user(login: $username)"`
+}
+
+func popularRepos(count int, orgname string) []Repo {
+	fmt.Println("Finding popular repos...")
+
+	var repos []Repo
+	variables := map[string]interface{}{
+		"username": githubv4.String(username),
+		"orgname":  githubv4.String(orgname),
+		"count":    githubv4.Int(count + 1), // +1 in case we encounter the meta-repo itself
+	}
+	err := gitHubClient.Query(context.Background(), &popularReposOrgQuery, variables)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, v := range popularReposOrgQuery.User.Organization.Repositories.Edges {
+		// ignore meta-repo
+		if string(v.Node.NameWithOwner) == fmt.Sprintf("%s/%s", username, username) {
+			continue
+		}
+
+		repos = append(repos, repoFromQL(v.Node))
+		if len(repos) == count {
+			break
+		}
+	}
+
+	fmt.Printf("Found %d repos!\n", len(repos))
+	return repos
+}
+
 var repoQuery struct {
 	Repository struct {
 		Description githubv4.String

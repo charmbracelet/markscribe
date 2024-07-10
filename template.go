@@ -18,6 +18,10 @@ func humanized(t interface{}) string {
 		}
 
 		return humanize.Time(v)
+	case int64:
+		return humanize.Comma(v)
+	case int:
+		return humanize.Comma(int64(v))
 	default:
 		return fmt.Sprintf("%v", t)
 	}
