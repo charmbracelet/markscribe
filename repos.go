@@ -333,9 +333,6 @@ func repoRecentReleases(owner, name string, count int) []Release {
 		})
 	}
 
-	if len(releases) > count {
-		return releases[:count]
-	}
 	return releases
 }
 
