@@ -310,6 +310,7 @@ func repoRecentReleases(owner, name string, count int) []Release {
 	variables := map[string]interface{}{
 		"owner": githubv4.String(owner),
 		"name":  githubv4.String(name),
+		"count": githubv4.Int(count),
 	}
 	err := gitHubClient.Query(context.Background(), &repoRecentReleasesQuery, variables)
 	if err != nil {
