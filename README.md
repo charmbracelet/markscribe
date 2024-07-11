@@ -120,6 +120,24 @@ Stars: {{.Stargazers}}
 This function requires GitHub authentication with the following API scopes:
 `repo:status`, `public_repo`, `read:user`.
 
+### Repositories with the most stars
+
+```
+{{range popularRepos "charmbracelet" 10}}
+Name: {{.Name}}
+NameWithOwner: {{.NameWithOwner}}
+Description: {{.Description}}
+URL: {{.URL}})
+Stars: {{.Stargazers}}
+{{end}}
+```
+
+This function requires GitHub authentication with the following API scopes:
+`read:org`, `public_repo`
+
+> [!TIP]
+> Use `{{with repo "charmbracelet .Name"}}` to create a pipeline that grabs additional information about the repo including releases.
+
 ### Custom GitHub repository
 
 ```
