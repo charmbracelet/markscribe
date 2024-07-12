@@ -71,53 +71,52 @@ var recentReleasesQuery struct {
 
 /*
 Order by stars
-{
-  organization(login: "charmbracelet") {
-    login
-    repositories(
-      first: 3
-      privacy: PUBLIC
-      orderBy: {field: STARGAZERS, direction: DESC}
-    ) {
-      totalCount
-      edges {
-        cursor
-        node {
-          nameWithOwner
-        }
-      }
-    }
-  }
-}*/
 
-var popularReposOrgQuery struct {
-	Organization struct {
-		Login        githubv4.String
-		Repositories struct {
-			TotalCount githubv4.Int
-			Edges      []struct {
-				Node qlRepository
-			}
-		} `graphql:"repositories(first: $count, privacy: PUBLIC, orderBy: {field: STARGAZERS, direction: DESC})"`
-	} `graphql:"organization(login: $orgname)"`
-}
+	{
+	  organization(login: "charmbracelet") {
+	    login
+	    repositories(
+	      first: 3
+	      privacy: PUBLIC
+	      orderBy: {field: STARGAZERS, direction: DESC}
+	    ) {
+	      totalCount
+	      edges {
+	        cursor
+	        node {
+	          nameWithOwner
+	        }
+	      }
+	    }
+	  }
+	}
+*/
+func popularRepos(owner string, count int) []Repo {
+	var query struct {
+		Organization struct {
+			Repositories struct {
+				Edges []struct {
+					Node qlRepository
+				}
+			} `graphql:"repositories(first: $count, privacy: PUBLIC, orderBy: {field: STARGAZERS, direction: DESC})"`
+		} `graphql:"organization(login: $owner)"`
+	}
 
-func popularRepos(orgname string, count int) []Repo {
 	fmt.Println("Finding popular repos...")
 
 	var repos []Repo
 	variables := map[string]interface{}{
-		"orgname": githubv4.String(orgname),
-		"count":   githubv4.Int(count + 1), // +1 in case we encounter the meta-repo itself
+		"owner": githubv4.String(owner),
+		"count": githubv4.Int(count + 1), // +1 in case we encounter the meta-repo itself
 	}
-	err := gitHubClient.Query(context.Background(), &popularReposOrgQuery, variables)
+	err := gitHubClient.Query(context.Background(), &query, variables)
 	if err != nil {
 		panic(err)
 	}
 
-	for _, v := range popularReposOrgQuery.Organization.Repositories.Edges {
+	for _, v := range query.Organization.Repositories.Edges {
 		// ignore meta-repo
-		if string(v.Node.NameWithOwner) == fmt.Sprintf("%s/%s", orgname, username) {
+		if string(v.Node.NameWithOwner) == fmt.Sprintf("%s/%s", owner, username) {
 			continue
 		}
 		if len(repos) == count {
