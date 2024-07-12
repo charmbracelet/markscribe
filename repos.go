@@ -91,7 +91,7 @@ Order by stars
 	  }
 	}
 */
-func popularRepos(owner string, count int) []Repo {
+func orgPopularRepos(owner string, count int) []Repo {
 	var query struct {
 		Organization struct {
 			Repositories struct {
