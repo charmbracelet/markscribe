@@ -102,7 +102,7 @@ var popularReposOrgQuery struct {
 	} `graphql:"organization(login: $orgname)"`
 }
 
-func popularRepos(count int, orgname string) []Repo {
+func popularRepos(orgname string, count int) []Repo {
 	fmt.Println("Finding popular repos...")
 
 	var repos []Repo
