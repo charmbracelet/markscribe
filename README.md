@@ -123,7 +123,7 @@ This function requires GitHub authentication with the following API scopes:
 ### Repositories with the most stars
 
 ```
-{{range popularRepos "charmbracelet" 10}}
+{{range orgPopularRepos "charmbracelet" 10}}
 Name: {{.Name}}
 NameWithOwner: {{.NameWithOwner}}
 Description: {{.Description}}
