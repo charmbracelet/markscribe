@@ -142,12 +142,15 @@ func pullRequestFromQL(pullRequest qlPullRequest) PullRequest {
 }
 
 func releaseFromQL(release qlRelease) Release {
-	return Release{
-		Name:        string(release.Nodes[0].Name),
-		TagName:     string(release.Nodes[0].TagName),
-		PublishedAt: release.Nodes[0].PublishedAt.Time,
-		URL:         string(release.Nodes[0].URL),
+	if len(release.Nodes) != 0 {
+		return Release{
+			Name:        string(release.Nodes[0].Name),
+			TagName:     string(release.Nodes[0].TagName),
+			PublishedAt: release.Nodes[0].PublishedAt.Time,
+			URL:         string(release.Nodes[0].URL),
+		}
 	}
+	return Release{}
 }
 
 func repoFromQL(repo qlRepository) Repo {
