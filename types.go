@@ -37,10 +37,14 @@ type PullRequest struct {
 
 // Release represents a release.
 type Release struct {
-	Name        string
-	TagName     string
-	PublishedAt time.Time
-	URL         string
+	Name         string
+	TagName      string
+	PublishedAt  time.Time
+	CreatedAt    time.Time
+	URL          string
+	IsLatest     bool
+	IsPreRelease bool
+	IsDraft      bool
 }
 
 // Repo represents a git repo.
@@ -89,8 +93,10 @@ type qlRelease struct {
 		Name         githubv4.String
 		TagName      githubv4.String
 		PublishedAt  githubv4.DateTime
+		CreatedAt    githubv4.DateTime
 		URL          githubv4.String
 		IsPrerelease githubv4.Boolean
+		IsLatest     githubv4.Boolean
 		IsDraft      githubv4.Boolean
 	}
 }
