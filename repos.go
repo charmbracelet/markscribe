@@ -344,39 +344,37 @@ func recentReleases(count int) []Repo {
 	return repos
 }
 
-/*{
-*  organization(login: "charmbracelet") {
-*    login
-*    repositories(
-*      first: 5
-*      privacy: PUBLIC
-*      orderBy: {field: PUSHED_AT, direction: DESC}
-*    ) {
-*      totalCount
-*      edges {
-*        cursor
-*        node {
-*          nameWithOwner
-*          pushedAt
-*          latestRelease {
-*            tagName
-*            createdAt
-*          }
-*        }
-*      }
-*    }
-*  }
-*}
- * */
-func orgRecentPushes(owner string, count int) []Repo {
+/*
+	  {
+		  repositoryOwner(login: "charmbracelet") {
+		    id
+		    login
+		    repositories(
+		      first: 5
+		      privacy: PUBLIC
+		      orderBy: {field: PUSHED_AT, direction: DESC}
+		    ) {
+		      edges {
+		        node {
+		          name
+		          description
+		          url
+		        }
+		      }
+		    }
+		  }
+		}
+	 *
+*/
+func recentPushes(owner string, count int) []Repo {
 	var query struct {
-		Organization struct {
+		Owner struct {
 			Repositories struct {
 				Edges []struct {
 					Node qlRepository
 				}
 			} `graphql:"repositories(first: $count, privacy: PUBLIC, orderBy: {field: PUSHED_AT, direction: DESC})"`
-		} `graphql:"organization(login: $owner)"`
+		} `graphql:"repositoryOwner(login: $owner)"`
 	}
 	fmt.Printf("Finding repos with recent pushes in the %s org\n", owner)
 	var repos []Repo
@@ -389,7 +387,7 @@ func orgRecentPushes(owner string, count int) []Repo {
 		panic(err)
 	}
 
-	for _, v := range query.Organization.Repositories.Edges {
+	for _, v := range query.Owner.Repositories.Edges {
 		// ignore meta-repo
 		repos = append(repos, repoFromQL(v.Node))
 		if len(repos) == count {

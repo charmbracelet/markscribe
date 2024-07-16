@@ -201,7 +201,7 @@ This function requires GitHub authentication with the following API scopes:
 ### Recent pushes in an organization
 
 ```
-{{range orgRecentPushes "charmbracelet" 10}}
+{{range recentPushes "charmbracelet" 10}}
 Name: {{.Name}}
 URL: {{.URL}}
 Description: {{.Description}}
