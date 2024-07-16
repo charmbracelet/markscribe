@@ -123,7 +123,7 @@ This function requires GitHub authentication with the following API scopes:
 ### Repositories with the most stars
 
 ```
-{{range orgPopularRepos "charmbracelet" 10}}
+{{range popularRepos "charmbracelet" 10}}
 Name: {{.Name}}
 NameWithOwner: {{.NameWithOwner}}
 Description: {{.Description}}
@@ -133,7 +133,7 @@ Stars: {{.Stargazers}}
 ```
 
 This function requires GitHub authentication with the following API scopes:
-`read:org`, `public_repo`
+`read:org`, `public_repo`, `read:user`
 
 > [!TIP]
 > Use `{{with repo "charmbracelet .Name"}}` to create a pipeline that grabs additional information about the repo including releases.

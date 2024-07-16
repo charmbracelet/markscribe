@@ -73,33 +73,34 @@ var recentReleasesQuery struct {
 Order by stars
 
 	{
-	  organization(login: "charmbracelet") {
+	  repositoryOwner(login: "charmbracelet") {
+	    id
 	    login
 	    repositories(
-	      first: 3
+	      first: 5
 	      privacy: PUBLIC
 	      orderBy: {field: STARGAZERS, direction: DESC}
 	    ) {
-	      totalCount
 	      edges {
-	        cursor
 	        node {
-	          nameWithOwner
+	          name
+	          description
+	          url
 	        }
 	      }
 	    }
 	  }
 	}
 */
-func orgPopularRepos(owner string, count int) []Repo {
+func popularRepos(owner string, count int) []Repo {
 	var query struct {
-		Organization struct {
+		Owner struct {
 			Repositories struct {
 				Edges []struct {
 					Node qlRepository
 				}
 			} `graphql:"repositories(first: $count, privacy: PUBLIC, orderBy: {field: STARGAZERS, direction: DESC})"`
-		} `graphql:"organization(login: $owner)"`
+		} `graphql:"repositoryOwner(login: $owner)"`
 	}
 
 	fmt.Println("Finding popular repos...")
@@ -114,7 +115,7 @@ func orgPopularRepos(owner string, count int) []Repo {
 		panic(err)
 	}
 
-	for _, v := range query.Organization.Repositories.Edges {
+	for _, v := range query.Owner.Repositories.Edges {
 		// ignore meta-repo
 		if string(v.Node.NameWithOwner) == fmt.Sprintf("%s/%s", owner, username) {
 			continue

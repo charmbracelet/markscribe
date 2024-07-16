@@ -44,7 +44,7 @@ func main() {
 	funcMap["recentForks"] = recentForks
 	funcMap["recentReleases"] = recentReleases
 	funcMap["recentRepos"] = recentRepos
-	funcMap["orgPopularRepos"] = orgPopularRepos
+	funcMap["popularRepos"] = popularRepos
 	funcMap["followers"] = recentFollowers
 	funcMap["recentStars"] = recentStars
 	funcMap["gists"] = gists
