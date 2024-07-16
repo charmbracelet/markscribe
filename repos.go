@@ -345,26 +345,25 @@ func recentReleases(count int) []Repo {
 }
 
 /*
-	  {
-		  repositoryOwner(login: "charmbracelet") {
-		    id
-		    login
-		    repositories(
-		      first: 5
-		      privacy: PUBLIC
-		      orderBy: {field: PUSHED_AT, direction: DESC}
-		    ) {
-		      edges {
-		        node {
-		          name
-		          description
-		          url
-		        }
-		      }
-		    }
-		  }
+	{
+		repositoryOwner(login: "charmbracelet") {
+		id
+		login
+		repositories(
+			first: 5
+			privacy: PUBLIC
+			orderBy: {field: PUSHED_AT, direction: DESC}
+		) {
+			edges {
+			node {
+				name
+				description
+				url
+			}
+			}
 		}
-	 *
+		}
+	}
 */
 func recentPushes(owner string, count int) []Repo {
 	var query struct {
