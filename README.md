@@ -198,7 +198,7 @@ Published: {{humanize .LastRelease.PublishedAt}}
 This function requires GitHub authentication with the following API scopes:
 `repo:status`, `public_repo`, `read:user`.
 
-### Recent pushes in an organization
+### Recent pushes
 
 ```
 {{range recentPushes "charmbracelet" 10}}
