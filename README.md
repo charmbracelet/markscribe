@@ -173,7 +173,7 @@ This function requires GitHub authentication with the following API scopes:
 ### Forks you recently created
 
 ```
-{{range recentForks "charmbracelet" 10}}
+{{range recentForkedRepos "charmbracelet" 10}}
 Name: {{.Name}}
 Description: {{.Description}}
 URL: {{.URL}})

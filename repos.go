@@ -254,7 +254,7 @@ func recentCreatedRepos(owner string, count int) []Repo {
 	return repos
 }
 
-func recentForks(owner string, count int) []Repo {
+func recentForkedRepos(owner string, count int) []Repo {
 	// fmt.Printf("Finding recently created repos...\n")
 
 	var repos []Repo

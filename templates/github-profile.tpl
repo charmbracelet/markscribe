@@ -11,7 +11,7 @@
 {{- end}}
 
 #### 🍴 My recent forks
-{{range recentForks "charmbracelet" 10}}
+{{range recentForkedRepos "charmbracelet" 10}}
 - [{{.Name}}]({{.URL}}) - {{.Description}}
 {{- end}}
 
