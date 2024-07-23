@@ -229,6 +229,7 @@ func recentPullRequests(count int) []PullRequest {
 func recentCreatedRepos(owner string, count int) []Repo {
 	var repos []Repo
 	variables := map[string]interface{}{
+		"owner":  githubv4.String(owner),
 		"count":  githubv4.Int(count + 1), // +1 in case we encounter the meta-repo itself
 		"isFork": githubv4.Boolean(false),
 	}
@@ -258,6 +259,7 @@ func recentForks(owner string, count int) []Repo {
 
 	var repos []Repo
 	variables := map[string]interface{}{
+		"owner":  githubv4.String(owner),
 		"count":  githubv4.Int(count + 1), // +1 in case we encounter the meta-repo itself
 		"isFork": githubv4.Boolean(true),
 	}
