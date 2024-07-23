@@ -50,7 +50,7 @@ var recentReposQuery struct {
 				Node   qlRepository
 			}
 		} `graphql:"repositories(first: $count, privacy: PUBLIC, isFork: $isFork, ownerAffiliations: OWNER, orderBy: {field: CREATED_AT, direction: DESC})"`
-	} `graphql:"user(login:$username)"`
+	} `graphql:"repositoryOwner(login: $owner)"`
 }
 
 var recentReleasesQuery struct {
@@ -226,12 +226,11 @@ func recentPullRequests(count int) []PullRequest {
 	return pullRequests
 }
 
-func recentCreatedRepos(count int) []Repo {
+func recentCreatedRepos(owner string, count int) []Repo {
 	var repos []Repo
 	variables := map[string]interface{}{
-		"username": githubv4.String(username),
-		"count":    githubv4.Int(count + 1), // +1 in case we encounter the meta-repo itself
-		"isFork":   githubv4.Boolean(false),
+		"count":  githubv4.Int(count + 1), // +1 in case we encounter the meta-repo itself
+		"isFork": githubv4.Boolean(false),
 	}
 	err := gitHubClient.Query(context.Background(), &recentReposQuery, variables)
 	if err != nil {
@@ -240,7 +239,7 @@ func recentCreatedRepos(count int) []Repo {
 
 	for _, v := range recentReposQuery.User.Repositories.Edges {
 		// ignore meta-repo
-		if string(v.Node.NameWithOwner) == fmt.Sprintf("%s/%s", username, username) {
+		if string(v.Node.NameWithOwner) == fmt.Sprintf("%s/%s", owner, owner) {
 			continue
 		}
 
@@ -254,14 +253,13 @@ func recentCreatedRepos(count int) []Repo {
 	return repos
 }
 
-func recentForks(count int) []Repo {
+func recentForks(owner string, count int) []Repo {
 	// fmt.Printf("Finding recently created repos...\n")
 
 	var repos []Repo
 	variables := map[string]interface{}{
-		"username": githubv4.String(username),
-		"count":    githubv4.Int(count + 1), // +1 in case we encounter the meta-repo itself
-		"isFork":   githubv4.Boolean(true),
+		"count":  githubv4.Int(count + 1), // +1 in case we encounter the meta-repo itself
+		"isFork": githubv4.Boolean(true),
 	}
 	err := gitHubClient.Query(context.Background(), &recentReposQuery, variables)
 	if err != nil {
@@ -270,7 +268,7 @@ func recentForks(count int) []Repo {
 
 	for _, v := range recentReposQuery.User.Repositories.Edges {
 		// ignore meta-repo
-		if string(v.Node.NameWithOwner) == fmt.Sprintf("%s/%s", username, username) {
+		if string(v.Node.NameWithOwner) == fmt.Sprintf("%s/%s", owner, owner) {
 			continue
 		}
 
