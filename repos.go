@@ -69,6 +69,68 @@ var recentReleasesQuery struct {
 	} `graphql:"user(login:$username)"`
 }
 
+/*
+Order by stars
+
+	{
+	  repositoryOwner(login: "charmbracelet") {
+	    id
+	    login
+	    repositories(
+	      first: 5
+	      privacy: PUBLIC
+	      orderBy: {field: STARGAZERS, direction: DESC}
+	    ) {
+	      edges {
+	        node {
+	          name
+	          description
+	          url
+	        }
+	      }
+	    }
+	  }
+	}
+*/
+func popularRepos(owner string, count int) []Repo {
+	var query struct {
+		Owner struct {
+			Repositories struct {
+				Edges []struct {
+					Node qlRepository
+				}
+			} `graphql:"repositories(first: $count, privacy: PUBLIC, orderBy: {field: STARGAZERS, direction: DESC})"`
+		} `graphql:"repositoryOwner(login: $owner)"`
+	}
+
+	fmt.Println("Finding popular repos...")
+
+	var repos []Repo
+	variables := map[string]interface{}{
+		"owner": githubv4.String(owner),
+		"count": githubv4.Int(count + 1), // +1 in case we encounter the meta-repo itself
+	}
+	err := gitHubClient.Query(context.Background(), &query, variables)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, v := range query.Owner.Repositories.Edges {
+		// ignore meta-repo
+		if string(v.Node.NameWithOwner) == fmt.Sprintf("%s/%s", owner, username) {
+			continue
+		}
+		if len(repos) == count {
+			break
+		}
+
+		repos = append(repos, repoFromQL(v.Node))
+	}
+
+	fmt.Printf("Found %d repos!\n", len(repos))
+	return repos
+}
+
 var repoQuery struct {
 	Repository struct {
 		Description githubv4.String
