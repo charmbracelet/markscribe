@@ -226,9 +226,7 @@ func recentPullRequests(count int) []PullRequest {
 	return pullRequests
 }
 
-func recentRepos(count int) []Repo {
-	// fmt.Printf("Finding recently created repos...\n")
-
+func recentCreatedRepos(count int) []Repo {
 	var repos []Repo
 	variables := map[string]interface{}{
 		"username": githubv4.String(username),
@@ -365,7 +363,7 @@ func recentReleases(count int) []Repo {
 		}
 	}
 */
-func recentPushes(owner string, count int) []Repo {
+func recentPushedRepos(owner string, count int) []Repo {
 	var query struct {
 		Owner struct {
 			Repositories struct {
@@ -375,7 +373,7 @@ func recentPushes(owner string, count int) []Repo {
 			} `graphql:"repositories(first: $count, privacy: PUBLIC, orderBy: {field: PUSHED_AT, direction: DESC})"`
 		} `graphql:"repositoryOwner(login: $owner)"`
 	}
-	fmt.Printf("Finding repos with recent pushes in the %s org\n", owner)
+	fmt.Printf("Finding repos with recent pushes owned by %s\n", owner)
 	var repos []Repo
 	variables := map[string]interface{}{
 		"count": githubv4.Int(count),
@@ -387,7 +385,6 @@ func recentPushes(owner string, count int) []Repo {
 	}
 
 	for _, v := range query.Owner.Repositories.Edges {
-		// ignore meta-repo
 		repos = append(repos, repoFromQL(v.Node))
 		if len(repos) == count {
 			break

@@ -41,11 +41,11 @@ func main() {
 	/* Github */
 	funcMap["recentContributions"] = recentContributions
 	funcMap["recentPullRequests"] = recentPullRequests
+	funcMap["popularRepos"] = popularRepos
+	funcMap["recentCreatedRepos"] = recentCreatedRepos
+	funcMap["recentPushedRepos"] = recentPushedRepos
 	funcMap["recentForks"] = recentForks
 	funcMap["recentReleases"] = recentReleases
-	funcMap["recentRepos"] = recentRepos
-	funcMap["popularRepos"] = popularRepos
-	funcMap["recentPushes"] = recentPushes
 	funcMap["followers"] = recentFollowers
 	funcMap["recentStars"] = recentStars
 	funcMap["gists"] = gists
