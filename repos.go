@@ -155,8 +155,6 @@ var repoRecentReleasesQuery struct {
 }
 
 func recentContributions(count int) []Contribution {
-	// fmt.Printf("Finding recent contributions...\n")
-
 	var contributions []Contribution
 	variables := map[string]interface{}{
 		"username": githubv4.String(username),
@@ -187,7 +185,6 @@ func recentContributions(count int) []Contribution {
 		return contributions[i].OccurredAt.After(contributions[j].OccurredAt)
 	})
 
-	// fmt.Printf("Found %d contributions!\n", len(repos))
 	if len(contributions) > count {
 		return contributions[:count]
 	}
@@ -195,8 +192,6 @@ func recentContributions(count int) []Contribution {
 }
 
 func recentPullRequests(count int) []PullRequest {
-	// fmt.Printf("Finding recently created pullRequests...\n")
-
 	var pullRequests []PullRequest
 	variables := map[string]interface{}{
 		"username": githubv4.String(username),
@@ -222,7 +217,6 @@ func recentPullRequests(count int) []PullRequest {
 		}
 	}
 
-	// fmt.Printf("Found %d pullRequests!\n", len(pullRequests))
 	return pullRequests
 }
 
@@ -250,13 +244,10 @@ func recentCreatedRepos(owner string, count int) []Repo {
 		}
 	}
 
-	// fmt.Printf("Found %d repos!\n", len(repos))
 	return repos
 }
 
 func recentForkedRepos(owner string, count int) []Repo {
-	// fmt.Printf("Finding recently created repos...\n")
-
 	var repos []Repo
 	variables := map[string]interface{}{
 		"owner":  githubv4.String(owner),
@@ -279,14 +270,10 @@ func recentForkedRepos(owner string, count int) []Repo {
 			break
 		}
 	}
-
-	// fmt.Printf("Found %d repos!\n", len(repos))
 	return repos
 }
 
 func recentReleases(count int) []Repo {
-	// fmt.Printf("Finding recent releases...\n")
-
 	var after *githubv4.String
 	var repos []Repo
 
@@ -300,7 +287,6 @@ func recentReleases(count int) []Repo {
 			panic(err)
 		}
 
-		// fmt.Printf("%+v\n", query)
 		if len(recentReleasesQuery.User.RepositoriesContributedTo.Edges) == 0 {
 			break
 		}
@@ -335,7 +321,6 @@ func recentReleases(count int) []Repo {
 		return repos[i].LastRelease.PublishedAt.After(repos[j].LastRelease.PublishedAt)
 	})
 
-	// fmt.Printf("Found %d repos!\n", len(repos))
 	if len(repos) > count {
 		return repos[:count]
 	}
@@ -373,7 +358,6 @@ func recentPushedRepos(owner string, count int) []Repo {
 			} `graphql:"repositories(first: $count, privacy: PUBLIC, orderBy: {field: PUSHED_AT, direction: DESC})"`
 		} `graphql:"repositoryOwner(login: $owner)"`
 	}
-	fmt.Printf("Finding repos with recent pushes owned by %s\n", owner)
 	var repos []Repo
 	variables := map[string]interface{}{
 		"count": githubv4.Int(count),
@@ -390,7 +374,6 @@ func recentPushedRepos(owner string, count int) []Repo {
 			break
 		}
 	}
-	fmt.Printf("Found %d repos!\n", len(repos))
 	return repos
 }
 
