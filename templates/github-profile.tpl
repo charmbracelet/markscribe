@@ -6,12 +6,12 @@
 {{- end}}
 
 #### 🌱 My latest projects
-{{range recentRepos 10}}
+{{range recentCreatedRepos "charmbracelet" 10}}
 - [{{.Name}}]({{.URL}}) - {{.Description}}
 {{- end}}
 
 #### 🍴 My recent forks
-{{range recentForks 10}}
+{{range recentForkedRepos "charmbracelet" 10}}
 - [{{.Name}}]({{.URL}}) - {{.Description}}
 {{- end}}
 

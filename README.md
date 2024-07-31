@@ -109,7 +109,7 @@ This function requires GitHub authentication with the following API scopes:
 ### Repositories you recently created
 
 ```
-{{range recentRepos 10}}
+{{range recentCreatedRepos "charmbracelet" 10}}
 Name: {{.Name}}
 Description: {{.Description}}
 URL: {{.URL}})
@@ -118,7 +118,7 @@ Stars: {{.Stargazers}}
 ```
 
 This function requires GitHub authentication with the following API scopes:
-`repo:status`, `public_repo`, `read:user`.
+`repo:status`, `public_repo`, `read:user` or `read:org` if you provide an organization name.
 
 ### Repositories with the most stars
 
@@ -173,7 +173,7 @@ This function requires GitHub authentication with the following API scopes:
 ### Forks you recently created
 
 ```
-{{range recentForks 10}}
+{{range recentForkedRepos "charmbracelet" 10}}
 Name: {{.Name}}
 Description: {{.Description}}
 URL: {{.URL}})
@@ -182,7 +182,7 @@ Stars: {{.Stargazers}}
 ```
 
 This function requires GitHub authentication with the following API scopes:
-`repo:status`, `public_repo`, `read:user`.
+`repo:status`, `public_repo`, `read:user` or `read:org` if you provide an organization name.
 
 ### Recent releases you contributed to
 
@@ -197,6 +197,23 @@ Published: {{humanize .LastRelease.PublishedAt}}
 
 This function requires GitHub authentication with the following API scopes:
 `repo:status`, `public_repo`, `read:user`.
+
+### Recent pushes
+
+```
+{{range recentPushedRepos "charmbracelet" 10}}
+Name: {{.Name}}
+URL: {{.URL}}
+Description: {{.Description}}
+Stars: {{.Stargazers}}
+{{end}}
+```
+
+This function requires GitHub authentication with the following API scopes:
+`public_repo`, `read:org`.
+
+> [!TIP]
+> Use `{{with repo "charmbracelet .Name"}}` to create a pipeline that grabs additional information about the repo including releases.
 
 ### Your published gists
 
