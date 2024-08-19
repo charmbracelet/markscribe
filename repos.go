@@ -145,7 +145,7 @@ var repoQuery struct {
 		Stargazers    struct {
 			TotalCount githubv4.Int
 		}
-		Releases qlReleases `graphql:"releases(last: 1)"`
+		Releases qlReleases `graphql:"releases(first: 1)"`
 	} `graphql:"repository(owner:$owner, name:$name)"`
 }
 
