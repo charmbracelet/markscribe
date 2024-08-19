@@ -89,6 +89,17 @@ type qlPullRequest struct {
 }
 
 type qlRelease struct {
+	Name         githubv4.String
+	TagName      githubv4.String
+	PublishedAt  githubv4.DateTime
+	CreatedAt    githubv4.DateTime
+	URL          githubv4.String
+	IsPrerelease githubv4.Boolean
+	IsLatest     githubv4.Boolean
+	IsDraft      githubv4.Boolean
+}
+
+type qlReleases struct {
 	Nodes []struct {
 		Name         githubv4.String
 		TagName      githubv4.String
@@ -142,6 +153,15 @@ func pullRequestFromQL(pullRequest qlPullRequest) PullRequest {
 }
 
 func releaseFromQL(release qlRelease) Release {
+	return Release{
+		Name:        string(release.Name),
+		TagName:     string(release.TagName),
+		PublishedAt: release.PublishedAt.Time,
+		URL:         string(release.URL),
+	}
+}
+
+func releasesFromQL(release qlReleases) Release {
 	if len(release.Nodes) != 0 {
 		return Release{
 			Name:        string(release.Nodes[0].Name),
