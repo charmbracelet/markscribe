@@ -184,6 +184,23 @@ Stars: {{.Stargazers}}
 This function requires GitHub authentication with the following API scopes:
 `repo:status`, `public_repo`, `read:user` or `read:org` if you provide an organization name.
 
+### Latest released projects
+
+```
+{{range latestReleasedRepos "charmbracelet" 10}}
+Name: {{.Name}}
+Description: {{.Description}}
+URL: {{.URL}})
+Stars: {{.Stargazers}}
+Last Release Name: {{.LastRelease.TagName}}
+Last Release URL: {{.LastRelease.URL}}
+Last Release Date: {{humanize .LastRelease.PublishedAt}}
+{{end}}
+```
+
+This function requires GitHub authentication with the following API scopes:
+`repo:status`, `public_repo`, `read:user`, `read:org`.
+
 ### Recent releases you contributed to
 
 ```

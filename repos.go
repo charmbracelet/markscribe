@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"slices"
 	"sort"
 
 	"github.com/shurcooL/githubv4"
@@ -62,7 +63,7 @@ var recentReleasesQuery struct {
 				Cursor githubv4.String
 				Node   struct {
 					qlRepository
-					Releases qlRelease `graphql:"releases(first: 10, orderBy: {field: CREATED_AT, direction: DESC})"`
+					Releases qlReleases `graphql:"releases(first: 10, orderBy: {field: CREATED_AT, direction: DESC})"`
 				}
 			}
 		} `graphql:"repositoriesContributedTo(first: 100, after:$after includeUserRepositories: true, contributionTypes: COMMIT, privacy: PUBLIC)"`
@@ -144,13 +145,13 @@ var repoQuery struct {
 		Stargazers    struct {
 			TotalCount githubv4.Int
 		}
-		Releases qlRelease `graphql:"releases(last: 1)"`
+		Releases qlReleases `graphql:"releases(last: 1)"`
 	} `graphql:"repository(owner:$owner, name:$name)"`
 }
 
 var repoRecentReleasesQuery struct {
 	Repository struct {
-		Releases qlRelease `graphql:"releases(first: $count, orderBy: {field: CREATED_AT, direction: DESC})"`
+		Releases qlReleases `graphql:"releases(first: $count, orderBy: {field: CREATED_AT, direction: DESC})"`
 	} `graphql:"repository(name: $name, owner: $owner)"`
 }
 
@@ -273,6 +274,46 @@ func recentForkedRepos(owner string, count int) []Repo {
 	return repos
 }
 
+func latestReleasedRepos(owner string, count int) []Repo {
+	var query struct {
+		Owner struct {
+			Repositories struct {
+				Edges []struct {
+					Cursor githubv4.String
+					Node   struct {
+						qlRepository
+						Release qlRelease `graphql:"latestRelease"`
+					}
+				}
+			} `graphql:"repositories(first: 100, privacy: PUBLIC, orderBy: {field: UPDATED_AT, direction: DESC})"`
+		} `graphql:"repositoryOwner(login: $owner)"`
+	}
+
+	var repos []Repo
+	variables := map[string]interface{}{
+		"owner": githubv4.String(owner),
+	}
+	err := gitHubClient.Query(context.Background(), &query, variables)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, v := range query.Owner.Repositories.Edges {
+		repo := repoFromQL(v.Node.qlRepository)
+		release := releaseFromQL(v.Node.Release)
+		repo.LastRelease = release
+		if repo.LastRelease.Name != "" {
+			repos = append(repos, repo)
+		}
+	}
+
+	slices.SortFunc(repos, func(a, b Repo) int {
+		return a.LastRelease.PublishedAt.Compare(b.LastRelease.PublishedAt)
+	})
+	slices.Reverse(repos)
+	return repos[:count]
+}
+
 func recentReleases(count int) []Repo {
 	var after *githubv4.String
 	var repos []Repo
@@ -302,7 +343,7 @@ func recentReleases(count int) []Repo {
 					v.Node.Releases.Nodes[0].PublishedAt.Time.IsZero() {
 					continue
 				}
-				r.LastRelease = releaseFromQL(v.Node.Releases)
+				r.LastRelease = releasesFromQL(v.Node.Releases)
 				break
 			}
 
@@ -395,7 +436,7 @@ func repo(owner, name string) Repo {
 		Description:   string(repo.Description),
 		Stargazers:    int(repo.Stargazers.TotalCount),
 		IsPrivate:     bool(repo.IsPrivate),
-		LastRelease:   releaseFromQL(repo.Releases),
+		LastRelease:   releasesFromQL(repo.Releases),
 	}
 }
 
