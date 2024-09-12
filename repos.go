@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"slices"
 	"sort"
+	"time"
 
 	"github.com/shurcooL/githubv4"
 )
@@ -389,17 +390,28 @@ func recentReleases(count int) []Repo {
 		}
 	}
 */
-func recentPushedRepos(owner string, count int) []Repo {
+
+type RepoWithPushedAt struct {
+	Repo
+	PushedAt time.Time
+}
+
+func recentPushedRepos(owner string, count int) []RepoWithPushedAt {
+	type qlRepoWithPushedAt struct {
+		qlRepository
+		PushedAt githubv4.DateTime
+	}
+
 	var query struct {
 		Owner struct {
 			Repositories struct {
 				Edges []struct {
-					Node qlRepository
+					Node qlRepoWithPushedAt
 				}
 			} `graphql:"repositories(first: $count, privacy: PUBLIC, orderBy: {field: PUSHED_AT, direction: DESC})"`
 		} `graphql:"repositoryOwner(login: $owner)"`
 	}
-	var repos []Repo
+	var repos []RepoWithPushedAt
 	variables := map[string]interface{}{
 		"count": githubv4.Int(count),
 		"owner": githubv4.String(owner),
@@ -410,7 +422,18 @@ func recentPushedRepos(owner string, count int) []Repo {
 	}
 
 	for _, v := range query.Owner.Repositories.Edges {
-		repos = append(repos, repoFromQL(v.Node))
+		repo := RepoWithPushedAt{
+			PushedAt: v.Node.PushedAt.Time,
+		}
+		repo.Owner = string(v.Node.Owner.Login)
+		repo.Name = string(v.Node.Name)
+		repo.NameWithOwner = string(v.Node.NameWithOwner)
+		repo.URL = string(v.Node.URL)
+		repo.Description = string(v.Node.Description)
+		repo.Stargazers = int(v.Node.Stargazers.TotalCount)
+		repo.IsPrivate = bool(v.Node.IsPrivate)
+
+		repos = append(repos, repo)
 		if len(repos) == count {
 			break
 		}
