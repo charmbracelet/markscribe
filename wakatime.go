@@ -62,36 +62,60 @@ func bar(percentage float64, barWidth int) string {
 	return fmt.Sprintf("%s  %.2f%%", bar, percentage)
 }
 
-func wakatimeCategoryBar(count int, category WakatimeCategoryType) string {
+func wakatimeCategoryBar(count int, category interface{}) string {
+	var typedCategory []WakatimeCategoryType
+
+	switch v := category.(type) {
+	case []WakatimeCategoryType:
+		typedCategory = v
+	case []WakatimeMachines:
+		// Convert WakatimeMachines to WakatimeCategoryType
+		typedCategory = make([]WakatimeCategoryType, len(v))
+		for i, machine := range v {
+			typedCategory[i] = WakatimeCategoryType{
+				Name:         machine.Name,
+				TotalSeconds: machine.TotalSeconds,
+				Percent:      machine.Percent,
+				Digital:      machine.Digital,
+				Text:         machine.Text,
+				Hours:        machine.Hours,
+				Minutes:      machine.Minutes,
+				Seconds:      machine.Seconds,
+			}
+		}
+	default:
+		panic("unknown category type")
+	}
+
 	// sort languages by percentage
-	for i := range category {
-		for j := i + 1; j < len(category); j++ {
-			if category[i].Percent < category[j].Percent {
-				category[i], category[j] = category[j], category[i]
+	for i := range typedCategory {
+		for j := i + 1; j < len(typedCategory); j++ {
+			if typedCategory[i].Percent < typedCategory[j].Percent {
+				typedCategory[i], typedCategory[j] = typedCategory[j], typedCategory[i]
 			}
 		}
 	}
 
 	// pad the name of the language so that they are all equal in lengh to the longest name plus 2 spaces
-	longestLanguage := 0
+	longestName := 0
 	longestTime := 0
-	for _, c := range category {
-		if len(c.Name) > longestLanguage {
-			longestLanguage = len(c.Name)
+	for _, c := range typedCategory {
+		if len(c.Name) > longestName {
+			longestName = len(c.Name)
 		}
 		time := len(formatTime(c.Hours, c.Minutes, c.Seconds))
 		if time > longestTime {
 			longestTime = time
 		}
 	}
-	for i, c := range category {
-		category[i].Name = fmt.Sprintf("%-*s", longestLanguage+2, c.Name)
-		category[i].Digital = fmt.Sprintf("%-*s", longestTime+2, formatTime(c.Hours, c.Minutes, c.Seconds))
+	for i, c := range typedCategory {
+		typedCategory[i].Name = fmt.Sprintf("%-*s", longestName+2, c.Name)
+		typedCategory[i].Digital = fmt.Sprintf("%-*s", longestTime+2, formatTime(c.Hours, c.Minutes, c.Seconds))
 	}
 
 	// generate the lines in the format: name bar percent%
 	var lines []string
-	for _, c := range category {
+	for _, c := range typedCategory {
 		lines = append(lines, fmt.Sprintf("%s %s %s", c.Name, c.Digital, bar(c.Percent, 25)))
 	}
 
