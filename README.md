@@ -306,6 +306,48 @@ This function requires GoodReads API key!
 
 This function requires a `LITERAL_EMAIL` and `LITERAL_PASSWORD`.
 
+### Your Wakatime total coding time for the week (human readable)
+
+```
+{{ wakatimeData.HumanReadableTotal }}
+```
+
+This function requires a `WAKATIME_API_KEY` and potentialy a `WAKATIME_URL`.
+
+### Your top Wakatime languages for the week
+
+```
+{{ range wakatimeData.Languages | chunk 5 | first }}
+- {{ .Name }}: {{ .Percent }}%
+{{- end}}
+```
+
+This function requires a `WAKATIME_API_KEY` and potentialy a `WAKATIME_URL`.
+
+### Your top Wakatime Languages formated as a bar
+
+```
+{{ wakatimeData.Languages | wakatimeCategoryBar 5 }}
+```
+
+```text
+TypeScript   5h 6m 42s    █░░░░░░░░░░░░░░░░░░░░░░░░  45.56%
+Go           3h 18m 11s   █░░░░░░░░░░░░░░░░░░░░░░░░  29.44%
+Astro        53m 35s      █░░░░░░░░░░░░░░░░░░░░░░░░  7.96%
+Markdown     31m 42s      █░░░░░░░░░░░░░░░░░░░░░░░░  4.71%
+Bash         25m 51s      █░░░░░░░░░░░░░░░░░░░░░░░░  3.84%
+```
+
+This can also be done with `Categories`, `Projects`, `Editors`, `OperatingSystems`, `Machines`, and `Dependencies`
+
+This function requires a `WAKATIME_API_KEY` and potentialy a `WAKATIME_URL`.
+
+### Other Wakatime data
+
+You can find the full list of the data you can get at [wakatimeTypes.go](./wakatimeTypes.go)
+
+This function requires a `WAKATIME_API_KEY` and potentialy a `WAKATIME_URL`.
+
 ## Template Engine
 
 markscribe uses Go's powerful template engine. You can find its documentation
@@ -319,6 +361,12 @@ To format timestamps, call `humanize`:
 
 ```
 {{humanize .Timestamp}}
+```
+
+To limit the length of an array 
+
+```
+{{.Array | chunk 5 | first}}
 ```
 
 ## GitHub Authentication
@@ -336,6 +384,12 @@ valid GoodReads key in an environment variable called `GOODREADS_TOKEN`. You can
 create a new token by going [here](https://www.goodreads.com/api/keys).
 Then you need to go to your repository and add it, `Settings -> Secrets -> New secret`.
 You also need to set your GoodReads user ID in your secrets as `GOODREADS_USER_ID`.
+
+## Wakatime Authentication
+
+In order to access any wakatime data you need to provide your api key as `WAKATIME_API_KEY`. If you use an 
+alternative wakatime server such as [wakapi](https://github.com/muety/wakapi)
+or [hackatime](https://github.com/hackclub/hackatime) then export the base wakatime compatible route as `WAKATIME_URL` e.g. `https://waka.hackclub.com/api/compat/wakatime/v1/`.
 
 ## FAQ
 

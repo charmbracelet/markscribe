@@ -17,6 +17,7 @@ import (
 var (
 	gitHubClient    *githubv4.Client
 	goodReadsClient *goodreads.Client
+	wakatimeClient  *Wakatime
 	goodReadsID     string
 	username        string
 
@@ -62,6 +63,9 @@ func main() {
 	funcMap["literalClubCurrentlyReading"] = literalClubCurrentlyReading
 	/* Utils */
 	funcMap["humanize"] = humanized
+	/* Wakatime */
+	funcMap["wakatimeData"] = wakatimeData
+	funcMap["wakatimeCategoryBar"] = wakatimeCategoryBar
 
 	tpl, err := template.New("tpl").Funcs(funcMap).Parse(string(tplIn))
 	if err != nil {
@@ -73,14 +77,22 @@ func main() {
 	gitHubToken := os.Getenv("GITHUB_TOKEN")
 	goodReadsToken := os.Getenv("GOODREADS_TOKEN")
 	goodReadsID = os.Getenv("GOODREADS_USER_ID")
+	wakatimeToken := os.Getenv("WAKATIME_API_KEY")
+	wakatimeUrl := os.Getenv("WAKATIME_URL")
+
 	if len(gitHubToken) > 0 {
 		httpClient = oauth2.NewClient(context.Background(), oauth2.StaticTokenSource(
 			&oauth2.Token{AccessToken: gitHubToken},
 		))
 	}
 
+	if len(wakatimeUrl) == 0 {
+		wakatimeUrl = "https://api.wakatime.com/api/v1/"
+	}
+
 	gitHubClient = githubv4.NewClient(httpClient)
 	goodReadsClient = goodreads.NewClient(goodReadsToken)
+	wakatimeClient = &Wakatime{apikey: wakatimeToken, baseurl: wakatimeUrl}
 
 	if len(gitHubToken) > 0 {
 		username, err = getUsername()
