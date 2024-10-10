@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 func wakatimeData() (WakatimeUserStats, error) {
@@ -36,4 +37,69 @@ func wakatimeData() (WakatimeUserStats, error) {
 	}
 
 	return stats.Data, nil
+}
+
+func formatTime(hours int, minutes int, seconds int) string {
+	if hours > 0 {
+		return fmt.Sprintf("%dh %dm %ds", hours, minutes, seconds)
+	}
+	if minutes > 0 {
+		return fmt.Sprintf("%dm %ds", minutes, seconds)
+	}
+	return fmt.Sprintf("%ds", seconds)
+}
+
+func bar(percentage float64, barWidth int) string {
+	bar := ""
+	for i := 0; i < barWidth; i++ {
+		if float64(i) < percentage/100/float64(barWidth) {
+			bar += "█"
+		} else {
+			bar += "░"
+		}
+	}
+
+	return fmt.Sprintf("%s  %.2f%%", bar, percentage)
+}
+
+func wakatimeLanguagesBar(count int) string {
+	data, err := wakatimeData()
+	if err != nil {
+		return fmt.Sprintf("Error: %s", err)
+	}
+
+	// sort languages by percentage
+	languages := data.Languages
+	for i := range languages {
+		for j := i + 1; j < len(languages); j++ {
+			if languages[i].Percent < languages[j].Percent {
+				languages[i], languages[j] = languages[j], languages[i]
+			}
+		}
+	}
+
+	// pad the name of the language so that they are all equal in lengh to the longest name plus 2 spaces
+	longestLanguage := 0
+	longestTime := 0
+	for _, l := range languages {
+		if len(l.Name) > longestLanguage {
+			longestLanguage = len(l.Name)
+		}
+		time := len(formatTime(l.Hours, l.Minutes, l.Seconds))
+		if time > longestTime {
+			longestTime = time
+		}
+	}
+	for i, l := range languages {
+		languages[i].Name = fmt.Sprintf("%-*s", longestLanguage+2, l.Name)
+		languages[i].Digital = fmt.Sprintf("%-*s", longestTime+2, formatTime(l.Hours, l.Minutes, l.Seconds))
+	}
+
+	// generate the lines in the format: name bar percent%
+	var lines []string
+	for _, l := range languages {
+		lines = append(lines, fmt.Sprintf("%s %s %s", l.Name, l.Digital, bar(l.Percent, 25)))
+	}
+
+	return strings.Join(lines[:count], "\n")
 }
