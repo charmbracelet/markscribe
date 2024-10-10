@@ -337,6 +337,12 @@ create a new token by going [here](https://www.goodreads.com/api/keys).
 Then you need to go to your repository and add it, `Settings -> Secrets -> New secret`.
 You also need to set your GoodReads user ID in your secrets as `GOODREADS_USER_ID`.
 
+## Wakatime Authentication
+
+In order to access any wakatime data you need to provide your api key as `WAKATIME_API_KEY`. If you use an 
+alternative wakatime server such as [wakapi](https://github.com/muety/wakapi)
+or [hackatime](https://github.com/hackclub/hackatime) then export the base wakatime compatible route as `WAKATIME_URL` e.g. `https://waka.hackclub.com/api/compat/wakatime/v1/`.
+
 ## FAQ
 
 Q: That's awesome, but can you expose more APIs and data?  
