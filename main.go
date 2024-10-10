@@ -65,7 +65,7 @@ func main() {
 	funcMap["humanize"] = humanized
 	/* Wakatime */
 	funcMap["wakatimeData"] = wakatimeData
-	funcMap["wakatimeLanguagesBar"] = wakatimeLanguagesBar
+	funcMap["wakatimeCategoryBar"] = wakatimeCategoryBar
 
 	tpl, err := template.New("tpl").Funcs(funcMap).Parse(string(tplIn))
 	if err != nil {
