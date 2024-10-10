@@ -326,7 +326,7 @@ This function requires a `WAKATIME_API_KEY` and potentialy a `WAKATIME_URL`.
 
 ### Your top Wakatime Languages formated as a bar
 ```
-{{ 	wakatimeLanguagesBar 5 }}
+{{ wakatimeData.Languages | wakatimeCategoryBar 5 }}
 ```
 
 ```text
