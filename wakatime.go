@@ -52,7 +52,7 @@ func formatTime(hours int, minutes int, seconds int) string {
 func bar(percentage float64, barWidth int) string {
 	bar := ""
 	for i := 0; i < barWidth; i++ {
-		if float64(i) < percentage/100/float64(barWidth) {
+		if float64(i) < percentage/(100/float64(barWidth)) {
 			bar += "█"
 		} else {
 			bar += "░"
