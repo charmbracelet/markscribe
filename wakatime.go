@@ -95,5 +95,8 @@ func wakatimeCategoryBar(count int, category WakatimeCategoryType) string {
 		lines = append(lines, fmt.Sprintf("%s %s %s", c.Name, c.Digital, bar(c.Percent, 25)))
 	}
 
-	return strings.Join(lines[:count], "\n")
+	if count < len(lines) {
+		return strings.Join(lines[:count], "\n")
+	}
+	return strings.Join(lines, "\n")
 }
