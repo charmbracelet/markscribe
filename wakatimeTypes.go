@@ -11,32 +11,22 @@ type WakatimeDataRes struct {
 }
 
 type WakatimeUserStats struct {
-	TotalSeconds                                    float64              `json:"total_seconds"`
-	TotalSecondsIncludingOtherLanguage              float64              `json:"total_seconds_including_other_language"`
-	HumanReadableTotal                              string               `json:"human_readable_total"`
-	HumanReadableTotalIncludingOtherLanguage        string               `json:"human_readable_total_including_other_language"`
-	DailyAverage                                    float64              `json:"daily_average"`
-	DailyAverageIncludingOtherLanguage              float64              `json:"daily_average_including_other_language"`
-	HumanReadableDailyAverage                       string               `json:"human_readable_daily_average"`
-	HumanReadableDailyAverageIncludingOtherLanguage string               `json:"human_readable_daily_average_including_other_language"`
-	Categories                                      WakatimeCategoryType `json:"categories"`
-	Projects                                        WakatimeCategoryType `json:"projects"`
-	Languages                                       WakatimeCategoryType `json:"languages"`
-	Editors                                         WakatimeCategoryType `json:"editors"`
-	OperatingSystems                                WakatimeCategoryType `json:"operating_systems"`
-	Dependencies                                    WakatimeCategoryType `json:"dependencies"`
-	Machines                                        []struct {
-		Name          string  `json:"name"`
-		MachineNameID string  `json:"machine_name_id"`
-		TotalSeconds  float64 `json:"total_seconds"`
-		Percent       float64 `json:"percent"`
-		Digital       string  `json:"digital"`
-		Text          string  `json:"text"`
-		Hours         int     `json:"hours"`
-		Minutes       int     `json:"minutes"`
-		Seconds       int     `json:"seconds"`
-	} `json:"machines"`
-	BestDay struct {
+	TotalSeconds                                    float64                `json:"total_seconds"`
+	TotalSecondsIncludingOtherLanguage              float64                `json:"total_seconds_including_other_language"`
+	HumanReadableTotal                              string                 `json:"human_readable_total"`
+	HumanReadableTotalIncludingOtherLanguage        string                 `json:"human_readable_total_including_other_language"`
+	DailyAverage                                    float64                `json:"daily_average"`
+	DailyAverageIncludingOtherLanguage              float64                `json:"daily_average_including_other_language"`
+	HumanReadableDailyAverage                       string                 `json:"human_readable_daily_average"`
+	HumanReadableDailyAverageIncludingOtherLanguage string                 `json:"human_readable_daily_average_including_other_language"`
+	Categories                                      []WakatimeCategoryType `json:"categories"`
+	Projects                                        []WakatimeCategoryType `json:"projects"`
+	Languages                                       []WakatimeCategoryType `json:"languages"`
+	Editors                                         []WakatimeCategoryType `json:"editors"`
+	OperatingSystems                                []WakatimeCategoryType `json:"operating_systems"`
+	Dependencies                                    []WakatimeCategoryType `json:"dependencies"`
+	Machines                                        []WakatimeMachines     `json:"machines"`
+	BestDay                                         struct {
 		Date         string  `json:"date"`
 		Text         string  `json:"text"`
 		TotalSeconds float64 `json:"total_seconds"`
@@ -65,7 +55,7 @@ type WakatimeUserStats struct {
 	ModifiedAt              string `json:"modified_at"`
 }
 
-type WakatimeCategoryType []struct {
+type WakatimeCategoryType struct {
 	Name         string  `json:"name"`
 	TotalSeconds float64 `json:"total_seconds"`
 	Percent      float64 `json:"percent"`
@@ -74,4 +64,9 @@ type WakatimeCategoryType []struct {
 	Hours        int     `json:"hours"`
 	Minutes      int     `json:"minutes"`
 	Seconds      int     `json:"seconds"`
+}
+
+type WakatimeMachines struct {
+	*WakatimeCategoryType
+	MachineNameID string `json:"machine_name_id"`
 }
