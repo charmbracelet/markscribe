@@ -338,7 +338,7 @@ Markdown     31m 42s      █░░░░░░░░░░░░░░░░░
 Bash         25m 51s      █░░░░░░░░░░░░░░░░░░░░░░░░  3.84%
 ```
 
-This can also be done with `Categories`, `Projects`, `Editors`, `OperatingSystems`, and `Dependencies`
+This can also be done with `Categories`, `Projects`, `Editors`, `OperatingSystems`, `Machines`, and `Dependencies`
 
 This function requires a `WAKATIME_API_KEY` and potentialy a `WAKATIME_URL`.
 
