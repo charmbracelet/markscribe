@@ -11,73 +11,21 @@ type WakatimeDataRes struct {
 }
 
 type WakatimeUserStats struct {
-	TotalSeconds                                    float64 `json:"total_seconds"`
-	TotalSecondsIncludingOtherLanguage              float64 `json:"total_seconds_including_other_language"`
-	HumanReadableTotal                              string  `json:"human_readable_total"`
-	HumanReadableTotalIncludingOtherLanguage        string  `json:"human_readable_total_including_other_language"`
-	DailyAverage                                    float64 `json:"daily_average"`
-	DailyAverageIncludingOtherLanguage              float64 `json:"daily_average_including_other_language"`
-	HumanReadableDailyAverage                       string  `json:"human_readable_daily_average"`
-	HumanReadableDailyAverageIncludingOtherLanguage string  `json:"human_readable_daily_average_including_other_language"`
-	Categories                                      []struct {
-		Name         string  `json:"name"`
-		TotalSeconds float64 `json:"total_seconds"`
-		Percent      float64 `json:"percent"`
-		Digital      string  `json:"digital"`
-		Text         string  `json:"text"`
-		Hours        int     `json:"hours"`
-		Minutes      int     `json:"minutes"`
-	} `json:"categories"`
-	Projects []struct {
-		Name         string  `json:"name"`
-		TotalSeconds float64 `json:"total_seconds"`
-		Percent      float64 `json:"percent"`
-		Digital      string  `json:"digital"`
-		Text         string  `json:"text"`
-		Hours        int     `json:"hours"`
-		Minutes      int     `json:"minutes"`
-	} `json:"projects"`
-	Languages []struct {
-		Name         string  `json:"name"`
-		TotalSeconds float64 `json:"total_seconds"`
-		Percent      float64 `json:"percent"`
-		Digital      string  `json:"digital"`
-		Text         string  `json:"text"`
-		Hours        int     `json:"hours"`
-		Minutes      int     `json:"minutes"`
-		Seconds      int     `json:"seconds"`
-	} `json:"languages"`
-	Editors []struct {
-		Name         string  `json:"name"`
-		TotalSeconds float64 `json:"total_seconds"`
-		Percent      float64 `json:"percent"`
-		Digital      string  `json:"digital"`
-		Text         string  `json:"text"`
-		Hours        int     `json:"hours"`
-		Minutes      int     `json:"minutes"`
-		Seconds      int     `json:"seconds"`
-	} `json:"editors"`
-	OperatingSystems []struct {
-		Name         string  `json:"name"`
-		TotalSeconds float64 `json:"total_seconds"`
-		Percent      float64 `json:"percent"`
-		Digital      string  `json:"digital"`
-		Text         string  `json:"text"`
-		Hours        int     `json:"hours"`
-		Minutes      int     `json:"minutes"`
-		Seconds      int     `json:"seconds"`
-	} `json:"operating_systems"`
-	Dependencies []struct {
-		Name         string  `json:"name"`
-		TotalSeconds float64 `json:"total_seconds"`
-		Percent      float64 `json:"percent"`
-		Digital      string  `json:"digital"`
-		Text         string  `json:"text"`
-		Hours        int     `json:"hours"`
-		Minutes      int     `json:"minutes"`
-		Seconds      int     `json:"seconds"`
-	} `json:"dependencies"`
-	Machines []struct {
+	TotalSeconds                                    float64              `json:"total_seconds"`
+	TotalSecondsIncludingOtherLanguage              float64              `json:"total_seconds_including_other_language"`
+	HumanReadableTotal                              string               `json:"human_readable_total"`
+	HumanReadableTotalIncludingOtherLanguage        string               `json:"human_readable_total_including_other_language"`
+	DailyAverage                                    float64              `json:"daily_average"`
+	DailyAverageIncludingOtherLanguage              float64              `json:"daily_average_including_other_language"`
+	HumanReadableDailyAverage                       string               `json:"human_readable_daily_average"`
+	HumanReadableDailyAverageIncludingOtherLanguage string               `json:"human_readable_daily_average_including_other_language"`
+	Categories                                      WakatimeCategoryType `json:"categories"`
+	Projects                                        WakatimeCategoryType `json:"projects"`
+	Languages                                       WakatimeCategoryType `json:"languages"`
+	Editors                                         WakatimeCategoryType `json:"editors"`
+	OperatingSystems                                WakatimeCategoryType `json:"operating_systems"`
+	Dependencies                                    WakatimeCategoryType `json:"dependencies"`
+	Machines                                        []struct {
 		Name          string  `json:"name"`
 		MachineNameID string  `json:"machine_name_id"`
 		TotalSeconds  float64 `json:"total_seconds"`
@@ -115,4 +63,15 @@ type WakatimeUserStats struct {
 	Username                string `json:"username"`
 	CreatedAt               string `json:"created_at"`
 	ModifiedAt              string `json:"modified_at"`
+}
+
+type WakatimeCategoryType []struct {
+	Name         string  `json:"name"`
+	TotalSeconds float64 `json:"total_seconds"`
+	Percent      float64 `json:"percent"`
+	Digital      string  `json:"digital"`
+	Text         string  `json:"text"`
+	Hours        int     `json:"hours"`
+	Minutes      int     `json:"minutes"`
+	Seconds      int     `json:"seconds"`
 }
