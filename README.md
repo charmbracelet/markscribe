@@ -321,6 +321,12 @@ To format timestamps, call `humanize`:
 {{humanize .Timestamp}}
 ```
 
+To limit the length of an array 
+
+```
+{{.Array | chunk 5 | first}}
+```
+
 ## GitHub Authentication
 
 In order to access some of GitHub's API, markscribe requires you to provide a
