@@ -324,6 +324,19 @@ This function requires a `WAKATIME_API_KEY` and potentialy a `WAKATIME_URL`.
 
 This function requires a `WAKATIME_API_KEY` and potentialy a `WAKATIME_URL`.
 
+### Your top Wakatime Languages formated as a bar
+```
+{{ 	wakatimeLanguagesBar 5 }}
+```
+
+```text
+TypeScript   5h 6m 42s    █░░░░░░░░░░░░░░░░░░░░░░░░  45.56%
+Go           3h 18m 11s   █░░░░░░░░░░░░░░░░░░░░░░░░  29.44%
+Astro        53m 35s      █░░░░░░░░░░░░░░░░░░░░░░░░  7.96%
+Markdown     31m 42s      █░░░░░░░░░░░░░░░░░░░░░░░░  4.71%
+Bash         25m 51s      █░░░░░░░░░░░░░░░░░░░░░░░░  3.84%
+```
+
 ### Other Wakatime data
 
 You can find the full list of the data you can get at [wakatimeTypes.go](./wakatimeTypes.go)
