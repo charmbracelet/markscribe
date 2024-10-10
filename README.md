@@ -325,6 +325,7 @@ This function requires a `WAKATIME_API_KEY` and potentialy a `WAKATIME_URL`.
 This function requires a `WAKATIME_API_KEY` and potentialy a `WAKATIME_URL`.
 
 ### Your top Wakatime Languages formated as a bar
+
 ```
 {{ wakatimeData.Languages | wakatimeCategoryBar 5 }}
 ```
@@ -336,6 +337,10 @@ Astro        53m 35s      █░░░░░░░░░░░░░░░░░
 Markdown     31m 42s      █░░░░░░░░░░░░░░░░░░░░░░░░  4.71%
 Bash         25m 51s      █░░░░░░░░░░░░░░░░░░░░░░░░  3.84%
 ```
+
+This can also be done with `Categories`, `Projects`, `Editors`, `OperatingSystems`, and `Dependencies`
+
+This function requires a `WAKATIME_API_KEY` and potentialy a `WAKATIME_URL`.
 
 ### Other Wakatime data
 
